@@ -22,6 +22,12 @@ export function ExampleScreen({ navigation }: Props) {
       >
         <Text style={styles.buttonText}>Ir a Login</Text>
       </Pressable>
+      <Pressable
+        style={[styles.button, styles.tertiaryButton]}
+        onPress={() => navigation.navigate('Catalogo')}
+      >
+        <Text style={styles.buttonText}>Ver Catálogo</Text>
+      </Pressable>
     </View>
   );
 }
@@ -51,8 +57,11 @@ const styles = StyleSheet.create({
   secondaryButton: {
     backgroundColor: '#4CAF50',
   },
+  tertiaryButton: {
+    backgroundColor: '#FF9800',
+  },
   buttonText: {
     color: 'white',
     fontSize: 16,
   },
-});
+}); 

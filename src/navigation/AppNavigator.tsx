@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ExampleScreen } from '../screens/ExampleScreen';
 import { LoginScreen } from '../screens/LoginScreen';
 import { CatalogoScreen } from '../screens/CatalogoScreen';
+import { CarritoScreen } from '../screens/CarritoScreen';
 import { RootStackParamList } from '../types/navigation';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -14,6 +15,7 @@ export function AppNavigator() {
         <Stack.Screen name="Example" component={ExampleScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Catalogo" component={CatalogoScreen} />
+        <Stack.Screen name="Carrito" component={CarritoScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

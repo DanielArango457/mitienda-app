@@ -1,28 +1,57 @@
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-
-type Producto = {
-  id: string;
-  nombre: string;
-  precio: number;
-};
-
-const productos: Producto[] = [
-  { id: '1', nombre: 'Camiseta', precio: 45000 },
-  { id: '2', nombre: 'Pantalón', precio: 89000 },
-  { id: '3', nombre: 'Zapatos', precio: 150000 },
-];
+import { useEffect, useState } from 'react';
+import { View, Text, FlatList, Image, ActivityIndicator, StyleSheet } from 'react-native';
+import { getProductos, Producto } from '../services/productos';
 
 export function CatalogoScreen() {
+  const [productos, setProductos] = useState<Producto[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    async function cargarProductos() {
+      try {
+        const data = await getProductos();
+        setProductos(data);
+      } catch (e) {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+    cargarProductos();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#2196F3" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text>Ocurrió un error al cargar los productos.</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Catálogo de Productos</Text>
       <FlatList
         data={productos}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.item}>
-            <Text style={styles.nombre}>{item.nombre}</Text>
-            <Text style={styles.precio}>${item.precio.toLocaleString()}</Text>
+            <Image source={{ uri: item.image }} style={styles.imagen} />
+            <View style={styles.info}>
+              <Text style={styles.nombre} numberOfLines={2}>
+                {item.title}
+              </Text>
+              <Text style={styles.precio}>${item.price}</Text>
+            </View>
           </View>
         )}
       />
@@ -36,6 +65,11 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 60,
   },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
@@ -43,13 +77,22 @@ const styles = StyleSheet.create({
   },
   item: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
+  imagen: {
+    width: 50,
+    height: 50,
+    marginRight: 12,
+    resizeMode: 'contain',
+  },
+  info: {
+    flex: 1,
+  },
   nombre: {
-    fontSize: 16,
+    fontSize: 14,
   },
   precio: {
     fontSize: 16,

@@ -4,7 +4,15 @@ import { useAuth } from '../context/AuthContext';
 
 export function LoginScreen() {
   const [name, setName] = useState('');
-  const { user, login, logout } = useAuth();
+  const { user, login, logout, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.message}>Cargando...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

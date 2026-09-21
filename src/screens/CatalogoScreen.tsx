@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Image, Pressable, ActivityIndicator, StyleSheet } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types/navigation';
 import { getProductos, Producto } from '../services/productos';
 
-export function CatalogoScreen() {
+type Props = NativeStackScreenProps<RootStackParamList, 'Catalogo'>;
+
+export function CatalogoScreen({ navigation }: Props) {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -44,7 +48,10 @@ export function CatalogoScreen() {
         data={productos}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.item}>
+          <Pressable
+            style={styles.item}
+            onPress={() => navigation.navigate('DetalleProducto', { productoId: item.id })}
+          >
             <Image source={{ uri: item.image }} style={styles.imagen} />
             <View style={styles.info}>
               <Text style={styles.nombre} numberOfLines={2}>
@@ -52,7 +59,7 @@ export function CatalogoScreen() {
               </Text>
               <Text style={styles.precio}>${item.price}</Text>
             </View>
-          </View>
+          </Pressable>
         )}
       />
     </View>

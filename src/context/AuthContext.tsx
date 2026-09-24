@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type AuthContextType = {
   user: string | null;
+  isAdmin: boolean;
   login: (name: string) => void;
   logout: () => void;
   loading: boolean;
@@ -37,8 +38,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await AsyncStorage.removeItem(STORAGE_KEY);
   };
 
+  const isAdmin = user === 'admin';
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, isAdmin, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

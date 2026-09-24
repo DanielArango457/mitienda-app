@@ -3,6 +3,7 @@ import { View, Text, FlatList, Image, Pressable, ActivityIndicator, StyleSheet }
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import { getProductos, Producto } from '../services/productos';
+import { useAuth } from '../context/AuthContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Catalogo'>;
 
@@ -10,6 +11,7 @@ export function CatalogoScreen({ navigation }: Props) {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const { isAdmin, logout } = useAuth();
 
   useEffect(() => {
     async function cargarProductos() {
@@ -24,6 +26,11 @@ export function CatalogoScreen({ navigation }: Props) {
     }
     cargarProductos();
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigation.replace('Login');
+  };
 
   if (loading) {
     return (
@@ -43,7 +50,23 @@ export function CatalogoScreen({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Catálogo de Productos</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>Catálogo</Text>
+        <View style={styles.headerButtons}>
+          {isAdmin && (
+            <Pressable onPress={() => navigation.navigate('PanelAdmin')}>
+              <Text style={styles.headerLink}>Admin</Text>
+            </Pressable>
+          )}
+          <Pressable onPress={() => navigation.navigate('Carrito')}>
+            <Text style={styles.headerLink}>Carrito</Text>
+          </Pressable>
+          <Pressable onPress={handleLogout}>
+            <Text style={styles.headerLink}>Salir</Text>
+          </Pressable>
+        </View>
+      </View>
+
       <FlatList
         data={productos}
         keyExtractor={(item) => item.id.toString()}
@@ -69,7 +92,6 @@ export function CatalogoScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     paddingTop: 60,
   },
   centered: {
@@ -77,15 +99,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 16,
+  },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 20,
+  },
+  headerButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  headerLink: {
+    color: '#2196F3',
+    fontSize: 14,
+    fontWeight: '600',
   },
   item: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 12,
+    paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },

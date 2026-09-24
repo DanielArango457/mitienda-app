@@ -1,10 +1,16 @@
 import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types/navigation';
 
-export function LoginScreen() {
-  const [name, setName] = useState('');
-  const { user, login, logout, loading } = useAuth();
+type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
+
+export function LoginScreen({ navigation }: Props) {
+  const [nombre, setNombre] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const { login, loading } = useAuth();
 
   if (loading) {
     return (
@@ -14,30 +20,41 @@ export function LoginScreen() {
     );
   }
 
+  const handleLogin = () => {
+    if (!nombre || !password) {
+      setErrorMsg('Debes ingresar usuario y contraseña');
+      return;
+    }
+    setErrorMsg('');
+    login(nombre);
+    navigation.replace('Catalogo');
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Iniciar sesión</Text>
+      <Text style={styles.title}>Mi Tienda</Text>
+      <Text style={styles.subtitle}>Inicia sesión</Text>
 
-      {user ? (
-        <>
-          <Text style={styles.message}>Bienvenido, {user} 👋</Text>
-          <Pressable style={styles.button} onPress={logout}>
-            <Text style={styles.buttonText}>Cerrar sesión</Text>
-          </Pressable>
-        </>
-      ) : (
-        <>
-          <TextInput
-            style={styles.input}
-            placeholder="Escribe tu nombre"
-            value={name}
-            onChangeText={setName}
-          />
-          <Pressable style={styles.button} onPress={() => login(name)}>
-            <Text style={styles.buttonText}>Entrar</Text>
-          </Pressable>
-        </>
-      )}
+      <TextInput
+        style={styles.input}
+        placeholder="Usuario"
+        value={nombre}
+        onChangeText={setNombre}
+        autoCapitalize="none"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Contraseña"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+
+      {errorMsg ? <Text style={styles.error}>{errorMsg}</Text> : null}
+
+      <Pressable style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Ingresar</Text>
+      </Pressable>
     </View>
   );
 }
@@ -46,34 +63,46 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
+    padding: 24,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 20,
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 30,
   },
   message: {
     fontSize: 18,
-    marginBottom: 20,
+    textAlign: 'center',
   },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
-    padding: 10,
-    width: '100%',
-    marginBottom: 15,
+    padding: 12,
+    marginBottom: 12,
+  },
+  error: {
+    color: '#f44336',
+    marginBottom: 12,
+    textAlign: 'center',
   },
   button: {
     backgroundColor: '#2196F3',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 14,
     borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 8,
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
+    fontWeight: '600',
   },
 });

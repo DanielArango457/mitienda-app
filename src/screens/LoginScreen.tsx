@@ -1,8 +1,9 @@
-import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native'; // quita TextInput de aquí
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
+import { CustomInputField } from '../components/CustomInputField'; // nuevo import
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -35,20 +36,17 @@ export function LoginScreen({ navigation }: Props) {
       <Text style={styles.title}>Mi Tienda</Text>
       <Text style={styles.subtitle}>Inicia sesión</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Usuario"
-        value={nombre}
-        onChangeText={setNombre}
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
+      <CustomInputField
+  placeholder="Usuario"
+  value={nombre}
+  onChangeText={setNombre}
+/>
+<CustomInputField
+  placeholder="Contraseña"
+  value={password}
+  onChangeText={setPassword}
+  secureTextEntry
+/>
 
       {errorMsg ? <Text style={styles.error}>{errorMsg}</Text> : null}
 

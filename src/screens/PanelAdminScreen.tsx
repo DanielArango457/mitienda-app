@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { View, Text, TextInput, Pressable, FlatList, StyleSheet } from 'react-native';
+import { View, Text, Pressable, FlatList, StyleSheet } from 'react-native';
+ import { CustomInputField } from '../components/CustomInputField';
 
 type ProductoNuevo = {
   id: string;
@@ -34,19 +35,17 @@ export function PanelAdminScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Panel de Administrador</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre del producto"
-        value={nombre}
-        onChangeText={setNombre}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Precio"
-        value={precio}
-        onChangeText={setPrecio}
-        keyboardType="numeric"
-      />
+      <CustomInputField
+  placeholder="Nombre del producto"
+  value={nombre}
+  onChangeText={setNombre}
+/>
+<CustomInputField
+  placeholder="Precio"
+  value={precio}
+  onChangeText={setPrecio}
+  keyboardType="numeric"
+/>
       <Pressable style={styles.button} onPress={handleAgregar}>
         <Text style={styles.buttonText}>Agregar producto</Text>
       </Pressable>
@@ -89,13 +88,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
-  },
+  
   button: {
     backgroundColor: '#2196F3',
     paddingVertical: 10,

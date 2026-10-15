@@ -2,37 +2,44 @@ import { useEffect, useState } from 'react';
 import { View, Text, Image, ActivityIndicator, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
-import { api } from '../services/api';
+import { getProductoPorId, Producto } from '../services/productos'; // ya no importa 'api' directo
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DetalleProducto'>;
 
-type ProductoDetalle = {
-  id: number;
-  title: string;
-  price: number;
-  description: string;
-  image: string;
-  category: string;
-};
 
 export function DetalleProductoScreen({ route }: Props) {
   const { productoId } = route.params;
-  const [producto, setProducto] = useState<ProductoDetalle | null>(null);
+  const [producto, setProducto] = useState<(Producto & { description: string }) | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
 
   useEffect(() => {
     async function cargarDetalle() {
-      const response = await api.get(`/products/${productoId}`);
-      setProducto(response.data);
-      setLoading(false);
+      try {
+        const data = await getProductoPorId(productoId);
+        setProducto(data);
+      } catch (e) {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
     }
     cargarDetalle();
   }, [productoId]);
 
-  if (loading || !producto) {
+  if (loading) {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color="#2196F3" />
+      </View>
+    );
+  }
+
+  if (error || !producto) {
+    return (
+      <View style={styles.centered}>
+        <Text>Ocurrió un error al cargar el producto.</Text>
       </View>
     );
   }

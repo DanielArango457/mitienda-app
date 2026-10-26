@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, Pressable, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Pressable, ActivityIndicator, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import { getProductos, Producto } from '../services/productos';
@@ -75,12 +75,14 @@ export function CatalogoScreen({ navigation }: Props) {
             style={styles.item}
             onPress={() => navigation.navigate('DetalleProducto', { productoId: item.id })}
           >
-            <Image source={{ uri: item.image }} style={styles.imagen} />
+                       <View style={styles.inicialBox}>
+              <Text style={styles.inicialTexto}>{item.nombre.charAt(0).toUpperCase()}</Text>
+            </View>
             <View style={styles.info}>
               <Text style={styles.nombre} numberOfLines={2}>
-                {item.title}
+                {item.nombre}
               </Text>
-              <Text style={styles.precio}>${item.price}</Text>
+              <Text style={styles.precio}>${item.precio}</Text>
             </View>
           </Pressable>
         )}
@@ -127,12 +129,21 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
-  imagen: {
+    inicialBox: {
     width: 50,
     height: 50,
     marginRight: 12,
-    resizeMode: 'contain',
+    borderRadius: 25,
+    backgroundColor: '#E3F2FD',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+  inicialTexto: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2196F3',
+  },
+
   info: {
     flex: 1,
   },

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, Image, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import { getProductoPorId, Producto } from '../services/productos'; // ya no importa 'api' directo
@@ -9,7 +9,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'DetalleProducto'>;
 
 export function DetalleProductoScreen({ route }: Props) {
   const { productoId } = route.params;
-  const [producto, setProducto] = useState<(Producto & { description: string }) | null>(null);
+  const [producto, setProducto] = useState<Producto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -46,11 +46,13 @@ export function DetalleProductoScreen({ route }: Props) {
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: producto.image }} style={styles.imagen} />
-      <Text style={styles.categoria}>{producto.category}</Text>
-      <Text style={styles.title}>{producto.title}</Text>
-      <Text style={styles.precio}>${producto.price}</Text>
-      <Text style={styles.descripcion}>{producto.description}</Text>
+      <View style={styles.inicialBox}>
+        <Text style={styles.inicialTexto}>{producto.nombre.charAt(0).toUpperCase()}</Text>
+      </View>
+      <Text style={styles.categoria}>{producto.categoria}</Text>
+      <Text style={styles.title}>{producto.nombre}</Text>
+      <Text style={styles.precio}>${producto.precio}</Text>
+      <Text style={styles.stock}>Stock disponible: {producto.stock}</Text>
     </View>
   );
 }
@@ -66,11 +68,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  imagen: {
-    width: '100%',
-    height: 200,
-    resizeMode: 'contain',
+  inicialBox: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#E3F2FD',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
     marginBottom: 15,
+  },
+  inicialTexto: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#2196F3',
   },
   categoria: {
     fontSize: 12,
@@ -89,9 +100,8 @@ const styles = StyleSheet.create({
     color: '#2196F3',
     marginBottom: 15,
   },
-  descripcion: {
+  stock: {
     fontSize: 14,
     color: '#444',
-    lineHeight: 20,
   },
 });

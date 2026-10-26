@@ -1,5 +1,5 @@
 import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: 'https://fakestoreapi.com',
+  baseURL: 'http://192.168.1.10:3000/api/v1',
 });

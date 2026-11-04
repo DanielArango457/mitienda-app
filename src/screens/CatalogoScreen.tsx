@@ -20,11 +20,13 @@ import { getProductos, Producto } from '../services/productos';
 import { mensajeDeError } from '../services/api';
 import { colors } from '../styles/colors';
 import { formatearPrecio } from '../utils/format';
+import { useCart } from '../context/CartContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Catalogo'>;
 
 export function CatalogoScreen({ navigation }: Props) {
   const { isAdmin, logout } = useAuth();
+    const { totalItems } = useCart();
   const [productos, setProductos] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(true);
   const [refrescando, setRefrescando] = useState(false);
@@ -106,7 +108,9 @@ export function CatalogoScreen({ navigation }: Props) {
           <View style={styles.acciones}>
             {!isAdmin ? (
               <Pressable style={styles.pillBlanca} onPress={() => navigation.navigate('Carrito')}>
-                <Text style={styles.pillBlancaTexto}>Carrito</Text>
+                                <Text style={styles.pillBlancaTexto}>
+                  {totalItems > 0 ? `Carrito (${totalItems})` : 'Carrito'}
+                </Text>
               </Pressable>
             ) : null}
             <Pressable

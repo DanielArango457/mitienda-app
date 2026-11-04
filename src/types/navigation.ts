@@ -1,7 +1,7 @@
 export type RootStackParamList = {
-  Login: undefined;
   Catalogo: undefined;
-  Carrito: undefined;
   DetalleProducto: { productoId: number };
+  Carrito: undefined;
+  AdminLogin: undefined;
   PanelAdmin: undefined;
 };

@@ -8,6 +8,7 @@ import { CheckoutScreen } from '../screens/CheckoutScreen';
 import { PedidoConfirmadoScreen } from '../screens/PedidoConfirmadoScreen';
 import { AdminLoginScreen } from '../screens/AdminLoginScreen';
 import { PanelAdminScreen } from '../screens/PanelAdminScreen';
+import { AdminPedidosScreen } from '../screens/AdminPedidosScreen';
 import { RootStackParamList } from '../types/navigation';
 import { useAuth } from '../context/AuthContext';
 import { colors } from '../styles/colors';
@@ -80,6 +81,11 @@ export function AppNavigator() {
           name="PanelAdmin"
           component={PanelAdminScreen}
           options={{ title: 'Panel de administrador' }}
+        />
+                <Stack.Screen
+          name="AdminPedidos"
+          component={AdminPedidosScreen}
+          options={{ title: 'Pedidos recibidos' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -6,4 +6,5 @@ export type RootStackParamList = {
   PedidoConfirmado: { pedidoId: number; total: number };
   AdminLogin: undefined;
   PanelAdmin: undefined;
+  AdminPedidos: undefined;
 };

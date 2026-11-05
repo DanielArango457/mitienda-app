@@ -4,11 +4,13 @@ import { RootStackParamList } from '../types/navigation';
 import { useCart, ItemCarrito } from '../context/CartContext';
 import { colors } from '../styles/colors';
 import { formatearPrecio } from '../utils/format';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Carrito'>;
 
 export function CarritoScreen({ navigation }: Props) {
   const { items, total, totalItems, cambiarCantidad, quitar, vaciar } = useCart();
+    const insets = useSafeAreaInsets();
 
   const confirmarVaciar = () => {
     Alert.alert('Vaciar carrito', '¿Quieres quitar todos los productos?', [
@@ -83,7 +85,7 @@ export function CarritoScreen({ navigation }: Props) {
         contentContainerStyle={styles.lista}
       />
 
-      <View style={styles.resumen}>
+           <View style={[styles.resumen, { paddingBottom: 16 + insets.bottom }]}>
         <View style={styles.filaTotal}>
           <Text style={styles.totalEtiqueta}>Total ({totalItems} productos)</Text>
           <Text style={styles.totalValor}>{formatearPrecio(total)}</Text>

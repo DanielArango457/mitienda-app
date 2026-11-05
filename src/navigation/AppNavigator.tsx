@@ -4,6 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { CatalogoScreen } from '../screens/CatalogoScreen';
 import { DetalleProductoScreen } from '../screens/DetalleProductoScreen';
 import { CarritoScreen } from '../screens/CarritoScreen';
+import { CheckoutScreen } from '../screens/CheckoutScreen';
+import { PedidoConfirmadoScreen } from '../screens/PedidoConfirmadoScreen';
 import { AdminLoginScreen } from '../screens/AdminLoginScreen';
 import { PanelAdminScreen } from '../screens/PanelAdminScreen';
 import { RootStackParamList } from '../types/navigation';
@@ -54,6 +56,20 @@ export function AppNavigator() {
           name="Carrito"
           component={CarritoScreen}
           options={{ title: 'Mi carrito' }}
+        />
+        <Stack.Screen
+          name="Checkout"
+          component={CheckoutScreen}
+          options={{ title: 'Finalizar compra' }}
+        />
+        <Stack.Screen
+          name="PedidoConfirmado"
+          component={PedidoConfirmadoScreen}
+          options={{
+            title: 'Pedido confirmado',
+            headerBackVisible: false,
+            gestureEnabled: false,
+          }}
         />
         <Stack.Screen
           name="AdminLogin"

@@ -5,7 +5,6 @@ import {
   TextInput,
   Pressable,
   FlatList,
-  Image,
   Alert,
   ActivityIndicator,
   KeyboardTypeOptions,
@@ -25,6 +24,7 @@ import {
 import { mensajeDeError } from '../services/api';
 import { colors } from '../styles/colors';
 import { formatearPrecio } from '../utils/format';
+import { ProductoImagen } from '../components/ProductoImagen';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PanelAdmin'>;
 
@@ -328,13 +328,12 @@ export function PanelAdminScreen({ navigation }: Props) {
       ListHeaderComponent={formulario}
       renderItem={({ item }) => (
         <View style={styles.item}>
-          {item.imagen ? (
-            <Image source={{ uri: item.imagen }} style={styles.foto} resizeMode="cover" />
-          ) : (
-            <View style={[styles.foto, styles.fotoVacia]}>
-              <Text style={styles.inicial}>{item.nombre.charAt(0).toUpperCase()}</Text>
-            </View>
-          )}
+                    <ProductoImagen
+            uri={item.imagen}
+            nombre={item.nombre}
+            style={styles.foto}
+            tamanoInicial={22}
+          />
 
           <View style={styles.info}>
             <Text style={styles.nombre} numberOfLines={1}>

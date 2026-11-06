@@ -3,7 +3,7 @@ import {
   View,
   Text,
   Pressable,
-  Image,
+
   ScrollView,
   ActivityIndicator,
   Alert,
@@ -17,6 +17,7 @@ import { getProductoPorId, Producto } from '../services/productos';
 import { mensajeDeError } from '../services/api';
 import { colors } from '../styles/colors';
 import { formatearPrecio } from '../utils/format';
+import { ProductoImagen } from '../components/ProductoImagen';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DetalleProducto'>;
 
@@ -89,13 +90,12 @@ export function DetalleProductoScreen({ route, navigation }: Props) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contenido}>
-      {producto.imagen ? (
-        <Image source={{ uri: producto.imagen }} style={styles.foto} resizeMode="cover" />
-      ) : (
-        <View style={[styles.foto, styles.fotoVacia]}>
-          <Text style={styles.inicial}>{producto.nombre.charAt(0).toUpperCase()}</Text>
-        </View>
-      )}
+            <ProductoImagen
+        uri={producto.imagen}
+        nombre={producto.nombre}
+        style={styles.foto}
+        tamanoInicial={96}
+      />
 
       <View style={styles.info}>
         <Text style={styles.categoria}>{producto.categoria}</Text>

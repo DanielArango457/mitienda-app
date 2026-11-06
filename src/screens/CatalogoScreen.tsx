@@ -4,7 +4,7 @@ import {
   Text,
   Pressable,
   FlatList,
-  Image,
+
   TextInput,
   ScrollView,
   ActivityIndicator,
@@ -21,6 +21,7 @@ import { mensajeDeError } from '../services/api';
 import { colors } from '../styles/colors';
 import { formatearPrecio } from '../utils/format';
 import { useCart } from '../context/CartContext';
+import { ProductoImagen } from '../components/ProductoImagen';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Catalogo'>;
 
@@ -78,13 +79,12 @@ export function CatalogoScreen({ navigation }: Props) {
         style={[styles.card, agotado && styles.cardAgotado]}
         onPress={() => navigation.navigate('DetalleProducto', { productoId: item.id })}
       >
-        {item.imagen ? (
-          <Image source={{ uri: item.imagen }} style={styles.foto} resizeMode="cover" />
-        ) : (
-          <View style={[styles.foto, styles.fotoVacia]}>
-            <Text style={styles.inicial}>{item.nombre.charAt(0).toUpperCase()}</Text>
-          </View>
-        )}
+                <ProductoImagen
+          uri={item.imagen}
+          nombre={item.nombre}
+          style={styles.foto}
+          tamanoInicial={44}
+        />
         <View style={styles.cardInfo}>
           <Text style={styles.categoria}>{item.categoria}</Text>
           <Text style={styles.nombre} numberOfLines={2}>

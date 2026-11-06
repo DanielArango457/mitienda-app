@@ -1,7 +1,8 @@
-import { View, Text, Pressable, FlatList, Image, Alert, StyleSheet } from 'react-native';
+import { View, Text, Pressable, FlatList, Alert, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import { useCart, ItemCarrito } from '../context/CartContext';
+import { ProductoImagen } from '../components/ProductoImagen';
 import { colors } from '../styles/colors';
 import { formatearPrecio } from '../utils/format';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -21,13 +22,12 @@ export function CarritoScreen({ navigation }: Props) {
 
   const renderItem = ({ item }: { item: ItemCarrito }) => (
     <View style={styles.item}>
-      {item.imagen ? (
-        <Image source={{ uri: item.imagen }} style={styles.foto} resizeMode="cover" />
-      ) : (
-        <View style={[styles.foto, styles.fotoVacia]}>
-          <Text style={styles.inicial}>{item.nombre.charAt(0).toUpperCase()}</Text>
-        </View>
-      )}
+            <ProductoImagen
+        uri={item.imagen}
+        nombre={item.nombre}
+        style={styles.foto}
+        tamanoInicial={28}
+      />
 
       <View style={styles.datos}>
         <Text style={styles.nombre} numberOfLines={2}>

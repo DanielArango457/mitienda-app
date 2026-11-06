@@ -26,7 +26,7 @@ export function AdminLoginScreen({ navigation }: Props) {
     setEnviando(true);
 
     try {
-      await login(email, password);
+            await login(email.trim().toLowerCase(), password);
       navigation.replace('PanelAdmin');
     } catch (e) {
       setErrorMsg(mensajeDeError(e));

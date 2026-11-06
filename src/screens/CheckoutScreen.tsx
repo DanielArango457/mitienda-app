@@ -139,7 +139,7 @@ export function CheckoutScreen({ navigation }: Props) {
         <TextInput
           style={[styles.input, errores.telefono && styles.inputError]}
           value={telefono}
-          onChangeText={setTelefono}
+                    onChangeText={(texto) => setTelefono(texto.replace(/\D/g, ''))}
           placeholder="Ej: 3001234567"
           placeholderTextColor={colors.textMuted}
           keyboardType="phone-pad"

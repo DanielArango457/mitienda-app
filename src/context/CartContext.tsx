@@ -1,4 +1,12 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  ReactNode,
+} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Producto } from '../services/productos';
 
@@ -24,6 +32,7 @@ type CartContextType = {
   cambiarCantidad: (productoId: number, cantidad: number) => void;
   quitar: (productoId: number) => void;
   vaciar: () => void;
+  sincronizar: (productos: Producto[]) => number;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -33,6 +42,9 @@ const CART_KEY = 'mitienda_carrito';
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<ItemCarrito[]>([]);
   const [cargado, setCargado] = useState(false);
+  const itemsRef = useRef<ItemCarrito[]>([]);
+
+  itemsRef.current = items;
 
   useEffect(() => {
     async function cargarCarrito() {
@@ -114,12 +126,59 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems([]);
   };
 
+  // Compara el carrito con los productos actuales de la tienda.
+  // Devuelve cuántos cambios visibles hizo (quitados, cantidad reducida o precio nuevo).
+  const sincronizar = useCallback((productos: Producto[]): number => {
+    const actuales = itemsRef.current;
+    const nuevos: ItemCarrito[] = [];
+    let cambios = 0;
+
+    for (const item of actuales) {
+      const real = productos.find((p) => p.id === item.productoId);
+
+      if (!real || real.stock <= 0) {
+        cambios += 1;
+        continue;
+      }
+
+      const cantidad = Math.min(item.cantidad, real.stock);
+
+      if (cantidad !== item.cantidad || real.precio !== item.precio) {
+        cambios += 1;
+      }
+
+      nuevos.push({
+        productoId: item.productoId,
+        nombre: real.nombre,
+        precio: real.precio,
+        imagen: real.imagen,
+        stock: real.stock,
+        cantidad,
+      });
+    }
+
+    if (JSON.stringify(nuevos) !== JSON.stringify(actuales)) {
+      setItems(nuevos);
+    }
+
+    return cambios;
+  }, []);
+
   const totalItems = items.reduce((suma, item) => suma + item.cantidad, 0);
   const total = items.reduce((suma, item) => suma + item.precio * item.cantidad, 0);
 
   return (
     <CartContext.Provider
-      value={{ items, totalItems, total, agregar, cambiarCantidad, quitar, vaciar }}
+      value={{
+        items,
+        totalItems,
+        total,
+        agregar,
+        cambiarCantidad,
+        quitar,
+        vaciar,
+        sincronizar,
+      }}
     >
       {children}
     </CartContext.Provider>

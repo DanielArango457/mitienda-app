@@ -1,17 +1,48 @@
+import { useCallback, useState } from 'react';
 import { View, Text, Pressable, FlatList, Alert, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useFocusEffect } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../types/navigation';
 import { useCart, ItemCarrito } from '../context/CartContext';
 import { ProductoImagen } from '../components/ProductoImagen';
+import { getProductos } from '../services/productos';
 import { colors } from '../styles/colors';
 import { formatearPrecio } from '../utils/format';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Carrito'>;
 
+const AVISO_ACTUALIZADO =
+  'Actualizamos tu carrito según la disponibilidad y los precios actuales.';
+
 export function CarritoScreen({ navigation }: Props) {
-  const { items, total, totalItems, cambiarCantidad, quitar, vaciar } = useCart();
-    const insets = useSafeAreaInsets();
+  const { items, total, totalItems, cambiarCantidad, quitar, vaciar, sincronizar } = useCart();
+  const insets = useSafeAreaInsets();
+  const [aviso, setAviso] = useState<string | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      let activo = true;
+
+      async function actualizar() {
+        try {
+          const cambios = sincronizar(await getProductos());
+
+          if (activo) {
+            setAviso(cambios > 0 ? AVISO_ACTUALIZADO : null);
+          }
+        } catch {
+          // Sin conexión: se muestra el carrito guardado.
+        }
+      }
+
+      actualizar();
+
+      return () => {
+        activo = false;
+      };
+    }, [sincronizar]),
+  );
 
   const confirmarVaciar = () => {
     Alert.alert('Vaciar carrito', '¿Quieres quitar todos los productos?', [
@@ -22,7 +53,7 @@ export function CarritoScreen({ navigation }: Props) {
 
   const renderItem = ({ item }: { item: ItemCarrito }) => (
     <View style={styles.item}>
-            <ProductoImagen
+      <ProductoImagen
         uri={item.imagen}
         nombre={item.nombre}
         style={styles.foto}
@@ -67,6 +98,7 @@ export function CarritoScreen({ navigation }: Props) {
   if (items.length === 0) {
     return (
       <View style={styles.vacio}>
+        {aviso ? <Text style={[styles.aviso, styles.avisoVacio]}>{aviso}</Text> : null}
         <Text style={styles.vacioTitulo}>Tu carrito está vacío</Text>
         <Text style={styles.vacioTexto}>Agrega productos desde el catálogo.</Text>
         <Pressable style={styles.botonPrincipal} onPress={() => navigation.navigate('Catalogo')}>
@@ -83,9 +115,10 @@ export function CarritoScreen({ navigation }: Props) {
         keyExtractor={(item) => item.productoId.toString()}
         renderItem={renderItem}
         contentContainerStyle={styles.lista}
+        ListHeaderComponent={aviso ? <Text style={styles.aviso}>{aviso}</Text> : null}
       />
 
-           <View style={[styles.resumen, { paddingBottom: 16 + insets.bottom }]}>
+      <View style={[styles.resumen, { paddingBottom: 16 + insets.bottom }]}>
         <View style={styles.filaTotal}>
           <Text style={styles.totalEtiqueta}>Total ({totalItems} productos)</Text>
           <Text style={styles.totalValor}>{formatearPrecio(total)}</Text>
@@ -111,6 +144,18 @@ const styles = StyleSheet.create({
   lista: {
     padding: 12,
   },
+  aviso: {
+    backgroundColor: colors.primarySoft,
+    color: colors.primaryDark,
+    padding: 12,
+    borderRadius: 10,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  avisoVacio: {
+    alignSelf: 'stretch',
+    marginBottom: 24,
+  },
   item: {
     flexDirection: 'row',
     backgroundColor: colors.surface,
@@ -124,16 +169,6 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 8,
-  },
-  fotoVacia: {
-    backgroundColor: colors.primarySoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inicial: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: colors.primary,
   },
   datos: {
     flex: 1,

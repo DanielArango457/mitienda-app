@@ -6,31 +6,34 @@ export type Producto = {
   precio: number;
   categoria: string;
   stock: number;
+  imagen: string | null;
 };
 
-export type ProductoNuevo = Omit<Producto, 'id'>;
+export type ProductoNuevo = Omit<Producto, 'id' | 'imagen'> & {
+  imagen?: string | null;
+};
 
 export async function getProductos(): Promise<Producto[]> {
-  const response = await api.get('/productos');
-  return response.data;
+  const respuesta = await api.get<Producto[]>('/productos');
+  return respuesta.data;
 }
 
 export async function getProductoPorId(id: number): Promise<Producto> {
-  const response = await api.get(`/productos/${id}`);
-  return response.data;
+  const respuesta = await api.get<Producto>(`/productos/${id}`);
+  return respuesta.data;
 }
 
-export async function crearProducto(data: ProductoNuevo): Promise<Producto> {
-  const response = await api.post('/productos', data);
-  return response.data;
+export async function crearProducto(datos: ProductoNuevo): Promise<Producto> {
+  const respuesta = await api.post<Producto>('/productos', datos);
+  return respuesta.data;
 }
 
 export async function actualizarProducto(
   id: number,
-  data: Partial<ProductoNuevo>,
+  datos: Partial<ProductoNuevo>,
 ): Promise<Producto> {
-  const response = await api.put(`/productos/${id}`, data);
-  return response.data;
+  const respuesta = await api.put<Producto>(`/productos/${id}`, datos);
+  return respuesta.data;
 }
 
 export async function eliminarProducto(id: number): Promise<void> {

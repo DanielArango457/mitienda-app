@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "mitienda-app",
+    "name": "MiTienda",
     "slug": "mitienda-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,6 +10,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.danielarango.mitienda",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -23,6 +24,11 @@
     },
     "plugins": [
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "f3557ad2-113c-49b3-9428-5f70adc423c9"
+      }
+    }
   }
 }

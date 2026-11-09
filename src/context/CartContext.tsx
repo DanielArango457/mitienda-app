@@ -61,7 +61,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    cargarCarrito();
+    void cargarCarrito();
   }, []);
 
   useEffect(() => {

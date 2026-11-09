@@ -36,7 +36,7 @@ export function CarritoScreen({ navigation }: Props) {
         }
       }
 
-      actualizar();
+      void actualizar();
 
       return () => {
         activo = false;

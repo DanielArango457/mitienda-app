@@ -44,12 +44,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    restaurarSesion();
+    void restaurarSesion();
   }, []);
 
   useEffect(() => {
     setAlSesionExpirar(() => {
-      logout();
+      void logout();
     });
 
     return () => setAlSesionExpirar(null);
